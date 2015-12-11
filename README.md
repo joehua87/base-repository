@@ -9,8 +9,7 @@
 * It will parse the filter into <code>{commentsCount: {$gte: 5,$lte: 10}</code>
 
 # TODO
-* Write more Tests
-* Export to ES6 npm package
+* Write test for BaseRepository
 
 # Run Test
 * <code>npm install</code>
