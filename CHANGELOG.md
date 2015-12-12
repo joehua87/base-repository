@@ -1,3 +1,14 @@
+## 0.3.0
+* Add create-controller
+
+    Usage
+    ```javascript
+    import {createController} from 'base-repository';
+
+    ```
+* Handle more exception for BaseRepository
+* Add BaseRepository tests
+
 ## 0.2.0
 
 * Change query arguments

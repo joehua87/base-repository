@@ -15,8 +15,8 @@ describe('Process Filter', () => {
   });
 
   it('Regular Expression Case Sensitivity', () => {
-    const filter = repository.processFilter({code: 'lorem'});
-    expect(filter).to.deep.equal({code: /lorem/});
+    const filter = repository.processFilter({slug: 'lorem'});
+    expect(filter).to.deep.equal({slug: /lorem/});
   });
 
   it('Boolean', () => {

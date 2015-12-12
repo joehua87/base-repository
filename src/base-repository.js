@@ -25,32 +25,51 @@ export default class BaseRepository {
     return yield this._Model.findOne(filter).select(projection).lean();
   }
 
-  * getById(id) {
-    return yield this._Model.findOne({_id: id}).lean();
+  * getById(id, projection = this._config.detailProjection) {
+    return yield this._Model.findOne({_id: id}).select(projection).lean();
   }
 
-  * getOne(filter) {
-    const condition = this.processFilter(filter, this._config);
-    const entity = yield this._Model.find(condition).lean();
+  * getByFilter(filter, projection = this._config.detailProjection) {
+    const condition = this.processFilter(filter || {}, this._config);
+    const entity = yield this._Model.findOne(condition).select(projection).lean();
     return entity;
   }
 
-  * query(filter = {}, select = {
-    projection: this._config.queryProjection,
-    sort: this._config.defaultSort,
-    page: 1,
-    limit: this._config.defaultLimit
-  }) {
-    const condition = this.processFilter(filter, this._config);
-    const { projection, sort, page, limit} = select;
+  * query(filter = {}, select = {}) {
+    const condition = this.processFilter(filter || {}, this._config);
+
+    // Use select || {} to prevent case if select if null
+    const refinedSelect = {
+      projection: (select || {}).projection || this._config.queryProjection,
+      sort: (select || {}).sort || this._config.defaultSort,
+      page: (select || {}).page || 1,
+      limit: (select || {}).limit || this._config.defaultLimit
+    };
+
+    const { projection, sort, page, limit} = refinedSelect;
 
     const count = yield this._Model.count(condition);
-    const entities = yield this._Model.find(condition).select(projection).sort(sort).skip((page - 1) * limit).limit(limit).lean();
+    let query = this._Model.find(condition).select(projection).sort(sort);
+    if (!select.getAll) {
+      query = query.skip((page - 1) * limit).limit(limit).lean();
+    }
+    const entities = yield query;
+    if (select.getAll) {
+      return {count, entities};
+    }
     return {count, entities, sort, page, limit};
   }
 
-  * all(filter = {}, projection = this._config.queryProjection, sort = this._config.defaultSort) {
-    const condition = this.processFilter(filter, this._config);
+  * all(filter = {}, select) {
+    const condition = this.processFilter(filter || {}, this._config);
+
+    const defaultSelect = {
+      projection: this._config.queryProjection,
+      sort: this._config.defaultSort
+    };
+
+    const { projection, sort} = {...defaultSelect, ...select};
+
     const count = yield this._Model.count(condition);
     const entities = yield this._Model.find(condition).select(projection).sort(sort).lean();
     return {count, entities, sort};
@@ -65,8 +84,7 @@ export default class BaseRepository {
 
   * update(_id, item) {
     delete item._id;
-    const entity = yield this._Model.update({_id}, {$set: item});
-    return entity;
+    return yield this._Model.update({_id}, {$set: item});
   }
 
   * deleteById(_id) {
@@ -83,7 +101,8 @@ export default class BaseRepository {
     const setToAdd = {};
     // will return {tags: item} if field = 'tags';
     setToAdd[field] = item;
-    return yield this._Model.update({_id}, {$addToSet: setToAdd});
+    yield this._Model.update({_id}, {$addToSet: setToAdd});
+    return item;
   }
 
   * removeChild(_id, field, itemId) {

@@ -1,8 +1,11 @@
 import {Schema} from 'mongoose';
 import * as constant from '../src/constants';
 
+export const schemaName = 'Article';
+export const routeName = 'article';
+
 export const schemaDefinition = {
-  code: {type: String, required: true},
+  slug: {type: String, required: true},
   title: {type: String, required: true},
   description: {type: String},
   published: {type: Boolean, required: true, default: false},
@@ -14,6 +17,10 @@ export const schemaDefinition = {
       content: {type: String, required: true}
     }
   ],
+  tags: [{
+    slug: {type: String, required: true},
+    name: {type: String, required: true}
+  }],
   isFeatured: {type: Boolean, required: true, default: false},
   reviews: Number,
   commentsCount: {type: Number, required: true, default: 0},
@@ -23,14 +30,15 @@ export const schemaDefinition = {
 };
 
 export const schema = new Schema(schemaDefinition);
-schema.index({code: 1}, {unique: true});
+schema.index({slug: 1}, {unique: true});
 schema.index({title: 'text', description: 'text'}, {weights: {title: 10, description: 3}});
 
 export const config = {
-  key: 'code',
+  key: 'slug',
+  defaultSort: 'slug',
   defaultLimit: 10,
-  queryProjection: 'code title published commentsCount createdTime modifiedTime',
-  detailProjection: 'code title published comments commentsCount conversionRate createdTime modifiedTime',
+  queryProjection: 'slug title description tags published commentsCount createdTime modifiedTime',
+  detailProjection: 'slug title description tags published comments commentsCount conversionRate createdTime modifiedTime',
   fields: [
     {
       filterField: 'commentUsername',
@@ -63,10 +71,22 @@ export const config = {
       dbType: constant.STRING
     },
     {
-      filterField: 'code',
-      dbField: 'code',
+      filterField: 'slug',
+      dbField: 'slug',
       compareType: constant.REG_EX,
       dbType: constant.STRING
+    },
+    {
+      filterField: 'tag',
+      dbField: 'tags.slug',
+      compareType: constant.EQUAL,
+      dbType: constant.STRING
+    },
+    {
+      filterField: 'tags',
+      dbField: 'tags.slug',
+      compareType: constant.CONTAIN,
+      dbType: constant.STRING_ARRAY
     },
     {
       filterField: 'minCommentsCount',

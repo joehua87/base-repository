@@ -1,0 +1,34 @@
+{
+  "count": 1,
+  "entities": [
+    {
+      "slug": "ea-consectetur-aliquam-porro-doloribus-minima-harum-6",
+      "title": "Ea consectetur aliquam porro doloribus minima harum. 6",
+      "createdTime": "2014-03-11T15:22:55.591Z",
+      "modifiedTime": "2015-03-10T19:31:47.003Z",
+      "commentsCount": 6,
+      "tags": [
+        {
+          "slug": "healthy-recipes",
+          "name": "Healthy Recipes"
+        },
+        {
+          "slug": "exercises",
+          "name": "Exercises"
+        },
+        {
+          "slug": "lose-weight",
+          "name": "Lose Weight"
+        },
+        {
+          "slug": "gain-muscle",
+          "name": "Gain Muscle"
+        }
+      ],
+      "published": true
+    }
+  ],
+  "sort": "slug",
+  "page": 1,
+  "limit": 10
+}

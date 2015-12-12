@@ -1,0 +1,48 @@
+{
+  "count": 100,
+  "entities": [
+    {
+      "slug": "a-debitis-aspernatur-at-sed-voluptatibus-47",
+      "title": "A debitis aspernatur at sed voluptatibus. 47"
+    },
+    {
+      "slug": "a-in-accusamus-dolorem-delectus-omnis-ut-2",
+      "title": "A in accusamus dolorem delectus omnis ut. 2"
+    },
+    {
+      "slug": "adipisci-enim-dolore-magnam-eos-veritatis-voluptates-ut-4",
+      "title": "Adipisci enim dolore magnam eos veritatis voluptates ut. 4"
+    },
+    {
+      "slug": "adipisci-maiores-nemo-vel-quia-dignissimos-qui-cum-7",
+      "title": "Adipisci maiores nemo vel quia dignissimos qui cum. 7"
+    },
+    {
+      "slug": "aliquam-modi-deleniti-et-sequi-quibusdam-magnam-debitis-18",
+      "title": "Aliquam modi deleniti et sequi quibusdam magnam debitis. 18"
+    },
+    {
+      "slug": "amet-alias-dicta-laudantium-nihil-officiis-natus-quia-quia-91",
+      "title": "Amet alias dicta laudantium nihil officiis natus quia quia. 91"
+    },
+    {
+      "slug": "architecto-at-sit-72",
+      "title": "Architecto at sit. 72"
+    },
+    {
+      "slug": "aspernatur-qui-fugiat-sint-aut-temporibus-repellendus-70",
+      "title": "Aspernatur qui fugiat sint aut temporibus repellendus. 70"
+    },
+    {
+      "slug": "atque-voluptas-nam-laudantium-est-27",
+      "title": "Atque voluptas nam laudantium est. 27"
+    },
+    {
+      "slug": "aut-ducimus-velit-sunt-soluta-39",
+      "title": "Aut ducimus velit sunt soluta. 39"
+    }
+  ],
+  "sort": "slug",
+  "page": 1,
+  "limit": 10
+}
