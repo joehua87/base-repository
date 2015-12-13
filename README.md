@@ -11,11 +11,11 @@
 ## Usage:
 
 ### BaseRepository
-    ```javascript
-    import * as ArticleSchema from './article.model';
-    const repository = new BaseRepository(Article, ArticleSchema.config);
-    const Article = mongoose.model(ArticleSchema.schemaName, ArticleSchema.schema);
-    ```
+```javascript
+import * as ArticleSchema from './article.model';
+const repository = new BaseRepository(Article, ArticleSchema.config);
+const Article = mongoose.model(ArticleSchema.schemaName, ArticleSchema.schema);
+```
 View more at '/tests/base-repository.tests.js'
 
 ### createController
