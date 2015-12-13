@@ -31,8 +31,7 @@ export default class BaseRepository {
 
   * getByFilter(filter, projection = this._config.detailProjection) {
     const condition = this.processFilter(filter || {}, this._config);
-    const entity = yield this._Model.findOne(condition).select(projection).lean();
-    return entity;
+    return yield this._Model.findOne(condition).select(projection).lean();
   }
 
   * query(filter = {}, select = {}) {
@@ -55,9 +54,9 @@ export default class BaseRepository {
     }
     const entities = yield query;
     if (select.getAll) {
-      return {count, entities};
+      return {count, entities, sort, projection};
     }
-    return {count, entities, sort, page, limit};
+    return {count, entities, sort, projection, page, limit};
   }
 
   * all(filter = {}, select) {

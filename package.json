@@ -1,6 +1,6 @@
 {
   "name": "base-repository",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -39,6 +39,11 @@
     "eslint-loader": "^1.0.0",
     "eslint-plugin-import": "^0.8.0",
     "eslint-plugin-react": "^3.5.0",
+    "koa": "^1.1.0",
+    "koa-bodyparser": "^2.0.1",
+    "koa-json": "^1.1.1",
+    "koa-qs": "^2.0.0",
+    "koa-router": "^5.2.3",
     "faker": "^3.0.1",
     "mocha": "^2.3.4",
     "slug": "^0.9.1",

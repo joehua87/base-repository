@@ -1,4 +1,4 @@
-* The purpose of this project is to support define REST Api query
+* The purpose of this project is to support define REST Api Query quickly by mapping url params with mongodb query
 * Compatible with koa (generator)
 
 # Examples:
@@ -40,3 +40,16 @@ Controller Function:
 # Run Test
 * <code>npm install</code>
 * <code>npm test</code>
+
+# Run Examples
+```
+npm install
+```
+Generate Data
+```
+node examples/generate-data
+```
+Run Example
+```
+node examples
+```
