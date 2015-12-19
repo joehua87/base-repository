@@ -83,7 +83,7 @@ export default class BaseRepository {
   }
 
   * validateUpdate(_id, item) {
-    let entity = yield this._Model.findOne(_id);
+    let entity = yield this._Model.findOne({_id});
     entity = Object.assign(entity, item);
     yield entity.save();
     return entity;

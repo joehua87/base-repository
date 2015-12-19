@@ -1,6 +1,6 @@
 {
   "name": "base-repository",
-  "version": "0.3.3",
+  "version": "0.3.6",
   "description": "",
   "main": "lib/index.js",
   "scripts": {

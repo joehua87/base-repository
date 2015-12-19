@@ -25,9 +25,7 @@ export const schemaDefinition = {
   isFeatured: {type: Boolean, required: true, default: false},
   reviews: Number,
   commentsCount: {type: Number, required: true, default: 0},
-  conversionRate: {type: Number, required: true, default: 0},
-  createdTime: {type: String, required: true},
-  modifiedTime: {type: String, required: true}
+  conversionRate: {type: Number, required: true, default: 0}
 };
 
 export const schema = new Schema(schemaDefinition, {collection: schemaName});
