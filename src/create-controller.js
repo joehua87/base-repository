@@ -3,10 +3,11 @@ export function parseQueryRequest(request) {
   const filter = request.query.filter;
   const projection = request.query.projection;
   const sort = request.query.sort;
+  const getAll = request.query.getAll === 'true' ? true : false;
   const page = parseInt(request.query.page, 10);
   const limit = parseInt(request.query.limit, 10);
 
-  const select = {projection, sort, page, limit};
+  const select = {projection, sort, page, limit, getAll};
 
   // Remove to use default params in Base Repository
   if (!projection) {
@@ -42,6 +43,20 @@ export default function createController(repository) {
     console.log(entity);
 
     const response = yield repository.update(entity._id, entity);
+
+    this.status = 201;
+    this.body = response;
+  }
+
+  function* validateUpdate() {
+    const entity = this.request.body;
+    if (!entity._id) {
+      this.throw(400, 'Body required _id to update');
+    }
+
+    console.log(entity);
+
+    const response = yield repository.validateUpdate(entity._id, entity);
 
     this.status = 201;
     this.body = response;
@@ -138,5 +153,28 @@ export default function createController(repository) {
     this.body = response;
   }
 
-  return {query, insert, update, getByKey, getById, getByFilter, deleteById, addChild, removeChild};
+  function* getConfig() {
+    this.status = 200;
+    this.body = repository.getConfig();
+  }
+
+  function* getSchema() {
+    this.status = 200;
+    this.body = repository.getSchema();
+  }
+
+  return {
+    query,
+    insert,
+    update,
+    validateUpdate,
+    getByKey,
+    getById,
+    getByFilter,
+    deleteById,
+    addChild,
+    removeChild,
+    getConfig,
+    getSchema
+  };
 }

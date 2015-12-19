@@ -1,5 +1,6 @@
 import {Schema} from 'mongoose';
 import * as constant from '../../src/constants';
+import {timePlugin} from '../../src';
 
 export const schemaName = 'Article';
 export const routeName = 'article';
@@ -26,12 +27,13 @@ export const schemaDefinition = {
   commentsCount: {type: Number, required: true, default: 0},
   conversionRate: {type: Number, required: true, default: 0},
   createdTime: {type: String, required: true},
-  modifiedTime: {type: String, required: true},
+  modifiedTime: {type: String, required: true}
 };
 
 export const schema = new Schema(schemaDefinition, {collection: schemaName});
 schema.index({slug: 1}, {unique: true});
 schema.index({title: 'text', description: 'text'}, {weights: {title: 10, description: 3}});
+schema.plugin(timePlugin);
 
 export const config = {
   key: 'slug',

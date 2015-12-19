@@ -1,3 +1,13 @@
+## 0.3.3 (12-19-2015)
+* Get Config routes
+* Get Schema routes
+* validate-update routes
+* Register Route
+* CreatedTime, ModifiedTime Plugin
+
+## 0.3.2
+* Support Get All
+
 ## 0.3.0
 * Add create-controller
 

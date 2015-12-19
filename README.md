@@ -35,7 +35,7 @@ Controller Function:
 * removeChild
 
 # TODO
-* Write an koa.js example
+* Add Code Coverage
 
 # Run Test
 * <code>npm install</code>

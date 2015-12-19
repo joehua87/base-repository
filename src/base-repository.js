@@ -14,6 +14,14 @@ export default class BaseRepository {
     this._config = config;
   }
 
+  getConfig() {
+    return this._config;
+  }
+
+  getSchema() {
+    return this._Model.schema;
+  }
+
   * insert(entities) {
     const response = yield this._Model.create(entities);
     return Array.isArray(response) ? response.map(entity => entity.toObject()) : response.toObject();
@@ -74,7 +82,7 @@ export default class BaseRepository {
     return {count, entities, sort};
   }
 
-  * updateWithValidate(_id, item) {
+  * validateUpdate(_id, item) {
     let entity = yield this._Model.findOne(_id);
     entity = Object.assign(entity, item);
     yield entity.save();

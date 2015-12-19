@@ -1,6 +1,6 @@
 {
   "name": "base-repository",
-  "version": "0.3.1",
+  "version": "0.3.3",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -28,6 +28,8 @@
     "mongoose": "^4.3.1"
   },
   "devDependencies": {
+    "babel": "^5.8.34",
+    "babel-core": "^5.8.34",
     "babel-eslint": "^4.1.6",
     "babel-plugin-typecheck": "^2.0.0",
     "chai": "^3.4.1",
