@@ -4,6 +4,7 @@ import * as constant from './constants';
 
 
 export default class BaseRepository {
+  // TODO Refactor this to accept schemaDefinition
   /**
    *
    * @param Model

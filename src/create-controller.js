@@ -134,7 +134,7 @@ export default function createController(repository) {
   function* removeChild() {
     const id = this.params.id;
     if (!id) {
-      this.throw(400, 'Request params required _id');
+      this.throw(400, 'Request params required id');
     }
 
     const field = this.params.field;

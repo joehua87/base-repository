@@ -56,3 +56,7 @@ Run Example
 ```
 node examples
 ```
+
+# Steps for generate Test Data
+* Need a list of entities (real data).
+* Transfer a list of entities into mongodb data & use as initial testing data
