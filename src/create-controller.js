@@ -106,7 +106,7 @@ export default function createController(repository) {
     const response = yield repository.deleteById(id);
 
     this.status = 200;
-    this.body = response;
+    this.body = {_id: id, response};
   }
 
   function* addChild() {
