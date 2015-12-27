@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/joehua87/base-repository.svg?branch=master)](https://travis-ci.org/joehua87/base-repository)
+
 * The purpose of this project is to support define REST Api Query quickly by mapping url params with mongodb query
 * Compatible with koa (generator)
 
