@@ -38,9 +38,9 @@ export default class BaseRepository {
     return yield this._Model.findOne({_id: id}).select(projection).lean();
   }
 
-  * getByFilter(filter, projection = this._config.detailProjection) {
+  * getByFilter(filter, projection = this._config.detailProjection, sort = this._config.defaultSort) {
     const condition = this.processFilter(filter || {}, this._config);
-    return yield this._Model.findOne(condition).select(projection).lean();
+    return yield this._Model.findOne(condition).select(projection).sort(sort).lean();
   }
 
   * query(filter = {}, select = {}) {
