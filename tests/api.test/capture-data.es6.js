@@ -46,6 +46,7 @@ co(function* () {
   }
 
   console.log('Complete');
+  process.exit();
 
 }).catch(err => {
   mongoose.connection.db.dropDatabase();
