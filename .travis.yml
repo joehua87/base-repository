@@ -3,3 +3,5 @@ node_js:
   - "4"
 services:
   - mongodb
+after_success:
+  - npm publish
