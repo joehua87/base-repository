@@ -85,6 +85,9 @@ export default class BaseRepository {
 
   * validateUpdate(_id, item) {
     let entity = yield this._Model.findOne({_id});
+    if (!entity) {
+      throw new Error('Entity not exists');
+    }
     entity = Object.assign(entity, item);
     yield entity.save();
     return entity;
@@ -96,7 +99,13 @@ export default class BaseRepository {
   }
 
   * deleteById(_id) {
-    return yield this._Model.remove({_id: _id});
+    const entity = yield this._Model.findOne({_id}).select('_id');
+    if (!entity) {
+      throw new Error('Not exists entity');
+    }
+
+    yield this._Model.remove({_id: _id});
+    return entity;
   }
 
   * deleteByKey(keyValue) {
@@ -106,17 +115,34 @@ export default class BaseRepository {
   }
 
   * addChild(_id, field, item) {
-    const setToAdd = {};
-    // will return {tags: item} if field = 'tags';
-    setToAdd[field] = item;
-    yield this._Model.update({_id}, {$addToSet: setToAdd});
-    return item;
+    const parent = yield this._Model.findOne({_id}).select(field);
+    console.log(parent);
+    if (!parent) {
+      throw new Error('Not exists parent');
+    }
+
+    const child = parent[field].create(item);
+    parent[field].push(child);
+    yield parent.save();
+    return child;
   }
 
   * removeChild(_id, field, itemId) {
-    const condition = {};
-    condition[field] = {_id: itemId};
-    return yield this._Model.update({_id}, {$pull: condition});
+    const parent = yield this._Model.findOne({_id}).select(field);
+
+    if (!parent) {
+      throw new Error('Not exists parent');
+    }
+
+    const child = parent[field].id(itemId);
+
+    if (!child) {
+      throw new Error('Not exists child');
+    }
+
+    child.remove();
+    yield parent.save();
+    return child;
   }
 
   /**

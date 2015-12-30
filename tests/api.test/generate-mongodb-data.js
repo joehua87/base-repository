@@ -1,10 +1,10 @@
 import co from 'co';
 import path from 'path';
 import fs from 'co-fs-extra';
-import toMongoDbEntities from './to-mongodb-entities';
+import { toMongoDbEntities } from './../../src/helpers/generate-test-data';
 
-const entities = require('./article/test-data/request-test-data/entities.json');
-import * as articleSchema from '../article.model';
+const entities = require('./../.././test-data/request-test-data/entities.json');
+import * as articleSchema from '../article.model.js';
 
 co(function* () {
   const mongodbEntities = yield toMongoDbEntities(articleSchema, entities);

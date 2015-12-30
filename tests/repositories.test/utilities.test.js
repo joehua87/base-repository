@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { parseQueryRequest } from '../src/create-controller';
+import { parseQueryRequest } from '../../src/create-controller';
 
 
 describe('Parse Query Request', () => {

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import BaseRepository from '../src/base-repository';
-import * as ArticleSchema from './article.model';
+import BaseRepository from '../../src/base-repository';
+import * as ArticleSchema from '../_app/article.model.js';
 const repository = new BaseRepository(ArticleSchema.schema, ArticleSchema.config);
 
 describe('Process Filter', () => {

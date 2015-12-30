@@ -40,8 +40,6 @@ export default function createController(repository) {
       this.throw(400, 'Body required _id to update');
     }
 
-    console.log(entity);
-
     const response = yield repository.update(entity._id, entity);
 
     this.status = 201;
@@ -54,20 +52,44 @@ export default function createController(repository) {
       this.throw(400, 'Body required _id to update');
     }
 
-    console.log(entity);
-
-    const response = yield repository.validateUpdate(entity._id, entity);
-
-    this.status = 201;
-    this.body = response;
+    try {
+      const response = yield repository.validateUpdate(entity._id, entity);
+      this.status = 201;
+      this.body = response;
+    } catch (error) {
+      {
+        if (error.name === 'ValidationError') {
+          this.throw(400, `Validate fail at: ${Object.keys(error.errors).join(', ')}`);
+        } else {
+          const pattern = /E11000 duplicate key error index: (.*?)\.(.*?) dup key: ({ : ".*?" })/
+          const matches = pattern.exec(error.message);
+          if (matches) {
+            this.throw(400, `Duplicated at: ${matches[2]} ${matches[3]}`);
+          }
+          this.throw(400, error);
+        }
+      }
+    }
   }
 
   function* insert() {
     const entities = this.request.body;
-    const response = yield repository.insert(entities);
-
-    this.status = 201;
-    this.body = response;
+    try {
+      const response = yield repository.insert(entities);
+      this.status = 201;
+      this.body = response;
+    } catch (error) {
+      if (error.name === 'ValidationError') {
+        this.throw(400, `Validate fail at: ${Object.keys(error.errors).join(', ')}`);
+      } else {
+        const pattern = /E11000 duplicate key error index: (.*?)\.(.*?) dup key: ({ : ".*?" })/
+        const matches = pattern.exec(error.message);
+        if (matches) {
+          this.throw(400, `Duplicated at: ${matches[2]} ${matches[3]}`);
+        }
+        this.throw(400, error);
+      }
+    }
   }
 
   function* getByKey() {
@@ -103,10 +125,13 @@ export default function createController(repository) {
     if (!id) {
       this.throw(400, 'Request params required id');
     }
-    const response = yield repository.deleteById(id);
-
-    this.status = 200;
-    this.body = {_id: id, response};
+    try {
+      const response = yield repository.deleteById(id);
+      this.status = 200;
+      this.body = response;
+    } catch (error) {
+      this.throw(400, error);
+    }
   }
 
   function* addChild() {
@@ -125,10 +150,22 @@ export default function createController(repository) {
       this.throw(400, 'Body require item to add');
     }
 
-    const response = yield repository.addChild(id, field, item);
-    console.log(response);
-    this.status = 200;
-    this.body = response;
+    try {
+      const response = yield repository.addChild(id, field, item);
+      this.status = 201;
+      this.body = response;
+    } catch (error) {
+      if (error.name === 'ValidationError') {
+        this.throw(400, `Validate fail at: ${Object.keys(error.errors).join(', ')}`);
+      } else {
+        const pattern = /E11000 duplicate key error index: (.*?)\.(.*?) dup key: ({ : ".*?" })/
+        const matches = pattern.exec(error.message);
+        if (matches) {
+          this.throw(400, `Duplicated at: ${matches[2]} ${matches[3]}`);
+        }
+        this.throw(400, error);
+      }
+    }
   }
 
   function* removeChild() {
@@ -147,10 +184,13 @@ export default function createController(repository) {
       this.throw(400, 'Request params required itemId');
     }
 
-    const response = yield repository.removeChild(id, field, itemId);
-
-    this.status = 200;
-    this.body = response;
+    try {
+      const response = yield repository.removeChild(id, field, itemId);
+      this.status = 200;
+      this.body = response;
+    } catch (error) {
+      this.throw(400, error);
+    }
   }
 
   function* getConfig() {

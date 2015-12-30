@@ -12,6 +12,24 @@ const config = {
 const app = require('../../examples/src/app');
 const request = require('supertest').agent(app.listen());
 
+
+/**
+ * Transfer a list of entities to mongodb entities, to get _id, use for testing initial data.
+ * Call this manually in dev
+ * @param schema
+ * @param entities
+ * @returns Object[] - a list of entities with _id, __v, ...
+ */
+export function* toMongoDbEntities(schema, entities) {
+  const collection = uuid.v4();
+  mongoose.connect(`mongodb://localhost/${collection}`);
+
+  const Article = mongoose.model(schema.schemaName, schema.schema);
+  const mongodbEntities = yield Article.create(entities);
+  return mongodbEntities.map(entity => entity.toObject());
+}
+
+
 export function generateInitialData(schema, entities) {
   return new Promise((resolve) => {
     const collection = uuid.v4();
@@ -22,12 +40,17 @@ export function generateInitialData(schema, entities) {
     });
   });
 }
-
 export function cleanData() {
   return new Promise(resolve => {
     mongoose.connection.db.dropDatabase();
     mongoose.connection.close(resolve);
   });
+}
+
+export class QueryFactory {
+  constructor(request, endPoint) {
+
+  }
 }
 
 function createQueryPromise(endPoint, query) {

@@ -1,7 +1,7 @@
 import co from 'co';
 import path from 'path';
-import * as articleSchema from '../../../examples/src/article.model';
-import generateTestData from '../generate-test-data';
+import * as articleSchema from '../../examples/src/article.model.js';
+import generateTestData from '../../src/helpers/generate-test-data';
 
 const testData = require('./test-data/request-test-data');
 
