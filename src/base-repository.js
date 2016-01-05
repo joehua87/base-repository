@@ -35,7 +35,7 @@ export default class BaseRepository {
   }
 
   * getById(id, projection = this._config.detailProjection) {
-    return yield this._Model.findOne({_id: id}).select(projection).lean();
+    return yield this._Model.findOne({ _id: id }).select(projection).lean();
   }
 
   * getByFilter(filter, projection = this._config.detailProjection, sort = this._config.defaultSort) {
@@ -63,28 +63,28 @@ export default class BaseRepository {
     }
     const entities = yield query;
     if (select.getAll) {
-      return {count, entities, sort, projection};
+      return { count, entities, sort, projection };
     }
-    return {count, entities, sort, projection, page, limit};
+    return { count, entities, filter, sort, projection, page, limit };
   }
 
   * all(filter = {}, select) {
-    const condition = this.processFilter(filter || {}, this._config);
+    const condition = this.processFilter(filter, this._config);
 
     const defaultSelect = {
       projection: this._config.queryProjection,
       sort: this._config.defaultSort
     };
 
-    const { projection, sort} = {...defaultSelect, ...select};
+    const { projection, sort} = { ...defaultSelect, ...select };
 
     const count = yield this._Model.count(condition);
     const entities = yield this._Model.find(condition).select(projection).sort(sort).lean();
-    return {count, entities, sort};
+    return { count, entities, filter, sort };
   }
 
   * validateUpdate(_id, item) {
-    let entity = yield this._Model.findOne({_id});
+    let entity = yield this._Model.findOne({ _id });
     if (!entity) {
       throw new Error('Entity not exists');
     }
@@ -95,16 +95,16 @@ export default class BaseRepository {
 
   * update(_id, item) {
     delete item._id;
-    return yield this._Model.update({_id}, {$set: item});
+    return yield this._Model.update({ _id }, { $set: item });
   }
 
   * deleteById(_id) {
-    const entity = yield this._Model.findOne({_id}).select('_id');
+    const entity = yield this._Model.findOne({ _id }).select('_id');
     if (!entity) {
       throw new Error('Not exists entity');
     }
 
-    yield this._Model.remove({_id: _id});
+    yield this._Model.remove({ _id: _id });
     return entity;
   }
 
@@ -115,8 +115,7 @@ export default class BaseRepository {
   }
 
   * addChild(_id, field, item) {
-    const parent = yield this._Model.findOne({_id}).select(field);
-    console.log(parent);
+    const parent = yield this._Model.findOne({ _id }).select(field);
     if (!parent) {
       throw new Error('Not exists parent');
     }
@@ -128,7 +127,7 @@ export default class BaseRepository {
   }
 
   * removeChild(_id, field, itemId) {
-    const parent = yield this._Model.findOne({_id}).select(field);
+    const parent = yield this._Model.findOne({ _id }).select(field);
 
     if (!parent) {
       throw new Error('Not exists parent');
@@ -238,16 +237,16 @@ export default class BaseRepository {
           result[item.dbField] = value;
           break;
         case constant.GT:
-          result[item.dbField] = {...result[item.dbField], $gt: value};
+          result[item.dbField] = { ...result[item.dbField], $gt: value };
           break;
         case constant.GTE:
-          result[item.dbField] = {...result[item.dbField], $gte: value};
+          result[item.dbField] = { ...result[item.dbField], $gte: value };
           break;
         case constant.LT:
-          result[item.dbField] = {...result[item.dbField], $lt: value};
+          result[item.dbField] = { ...result[item.dbField], $lt: value };
           break;
         case constant.LTE:
-          result[item.dbField] = {...result[item.dbField], $lte: value};
+          result[item.dbField] = { ...result[item.dbField], $lte: value };
           break;
         case constant.REG_EX:
           result[item.dbField] = new RegExp(value);
@@ -256,13 +255,13 @@ export default class BaseRepository {
           result[item.dbField] = new RegExp(value, 'i');
           break;
         case constant.EXISTS:
-          result[item.dbField] = {...result[item.dbField], $exists: value};
+          result[item.dbField] = { ...result[item.dbField], $exists: value };
           break;
         case constant.FULL_TEXT:
-          result.$text = {$search: value};
+          result.$text = { $search: value };
           break;
         case constant.CONTAIN:
-          result[item.dbField] = {$in: value};
+          result[item.dbField] = { $in: value };
           break;
 
         default:

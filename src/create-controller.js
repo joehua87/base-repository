@@ -57,17 +57,15 @@ export default function createController(repository) {
       this.status = 201;
       this.body = response;
     } catch (error) {
-      {
-        if (error.name === 'ValidationError') {
-          this.throw(400, `Validate fail at: ${Object.keys(error.errors).join(', ')}`);
-        } else {
-          const pattern = /E11000 duplicate key error index: (.*?)\.(.*?) dup key: ({ : ".*?" })/
-          const matches = pattern.exec(error.message);
-          if (matches) {
-            this.throw(400, `Duplicated at: ${matches[2]} ${matches[3]}`);
-          }
-          this.throw(400, error);
+      if (error.name === 'ValidationError') {
+        this.throw(400, `Validate fail at: ${Object.keys(error.errors).join(', ')}`);
+      } else {
+        const pattern = /E11000 duplicate key error index: (.*?)\.(.*?) dup key: ({ : ".*?" })/;
+        const matches = pattern.exec(error.message);
+        if (matches) {
+          this.throw(400, `Duplicated at: ${matches[2]} ${matches[3]}`);
         }
+        this.throw(400, error);
       }
     }
   }
@@ -82,7 +80,7 @@ export default function createController(repository) {
       if (error.name === 'ValidationError') {
         this.throw(400, `Validate fail at: ${Object.keys(error.errors).join(', ')}`);
       } else {
-        const pattern = /E11000 duplicate key error index: (.*?)\.(.*?) dup key: ({ : ".*?" })/
+        const pattern = /E11000 duplicate key error index: (.*?)\.(.*?) dup key: ({ : ".*?" })/;
         const matches = pattern.exec(error.message);
         if (matches) {
           this.throw(400, `Duplicated at: ${matches[2]} ${matches[3]}`);
@@ -158,7 +156,7 @@ export default function createController(repository) {
       if (error.name === 'ValidationError') {
         this.throw(400, `Validate fail at: ${Object.keys(error.errors).join(', ')}`);
       } else {
-        const pattern = /E11000 duplicate key error index: (.*?)\.(.*?) dup key: ({ : ".*?" })/
+        const pattern = /E11000 duplicate key error index: (.*?)\.(.*?) dup key: ({ : ".*?" })/;
         const matches = pattern.exec(error.message);
         if (matches) {
           this.throw(400, `Duplicated at: ${matches[2]} ${matches[3]}`);

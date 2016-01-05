@@ -15,7 +15,7 @@ import fs from 'fs';
  * @property capture.ignoreProps
  * @property capture.outputPath - use this to capture & test expectedData
  * @property expectResponse.status
- * @property expectResponse.body
+ * @property expectResponse.bodyPath
  */
 
 /**

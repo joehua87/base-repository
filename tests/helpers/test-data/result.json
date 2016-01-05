@@ -1,0 +1,42 @@
+[
+  {
+    "code": "item-a",
+    "name": "Item A",
+    "category": {
+      "code": "cat-a",
+      "name": "Category A"
+    }
+  },
+  {
+    "code": "item-b",
+    "name": "Item B",
+    "category": {
+      "code": "cat-b",
+      "name": "Category B"
+    }
+  },
+  {
+    "code": "item-c",
+    "name": "Item C",
+    "category": {
+      "code": "cat-a",
+      "name": "Category A"
+    }
+  },
+  {
+    "code": "item-d",
+    "name": "Item D",
+    "category": {
+      "code": "cat-b",
+      "name": "Category B"
+    }
+  },
+  {
+    "code": "item-e",
+    "name": "Item E",
+    "category": {
+      "code": "cat-c",
+      "name": "Category C"
+    }
+  }
+]

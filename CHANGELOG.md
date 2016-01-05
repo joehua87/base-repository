@@ -1,3 +1,9 @@
+## 0.4.2 (01-05-2015)
+* Add Read List of Objects From Csv
+
+## 0.4.0
+* Add Travis CI Coverage
+
 ## 0.3.3 (12-19-2015)
 * Get Config routes
 * Get Schema routes

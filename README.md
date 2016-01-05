@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/joehua87/base-repository.svg?branch=master)](https://travis-ci.org/joehua87/base-repository)
+
 [![Coverage Status](https://coveralls.io/repos/joehua87/base-repository/badge.svg?branch=master&service=github)](https://coveralls.io/github/joehua87/base-repository?branch=master)
 
 * The purpose of this project is to support define REST Api Query quickly by mapping url params with mongodb query
