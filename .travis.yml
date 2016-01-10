@@ -7,3 +7,7 @@ before_script:
   - node ./tests/api.test/capture-data.js
 after_success:
   - npm publish
+deploy:
+  api_key: 07c061e7-783c-4cd9-ab1d-91a3df80e92f
+  email: joehua87@gmail.com
+  provider: npm
