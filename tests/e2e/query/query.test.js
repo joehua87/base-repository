@@ -36,7 +36,7 @@ describe('Query Api', () => {
   it('has sort', (done) => {
     const expectResponse = require('./test-data/03-sort-query.json')
     request.get('/article/query')
-      .query({ sort: 'name' })
+      .query({ sort: 'title' })
       .end((error, { body }) => {
         expect(body).to.containSubset(expectResponse)
         done()
