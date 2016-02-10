@@ -1,3 +1,9 @@
+## 0.5.0
+* Refactor
+* Update to babel 6
+* Add bin nest-omit
+* Create api
+
 ## 0.4.2 (01-05-2015)
 * Add Read List of Objects From Csv
 

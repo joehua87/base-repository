@@ -1,0 +1,28 @@
+{
+  "_id": "567f8a571c17d9c58394973c",
+  "__v": 0,
+  "slug": "laudantium-facilis-repellendus-95-new",
+  "title": "Laudantium facilis repellendus. 95 new",
+  "description": "This is new description",
+  "conversionRate": 0.04363175999606028,
+  "commentsCount": 10,
+  "isFeatured": false,
+  "tags": [
+    {
+      "slug": "lose-weight",
+      "name": "Lose Weight",
+      "_id": "567f8a571c17d9c583949749"
+    },
+    {
+      "slug": "exercises",
+      "name": "Exercises",
+      "_id": "567f8a571c17d9c583949748"
+    },
+    {
+      "slug": "healthy-recipes",
+      "name": "Healthy Recipes",
+      "_id": "567f8a571c17d9c583949747"
+    }
+  ],
+  "published": true
+}

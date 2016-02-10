@@ -1,7 +1,10 @@
-import moment from 'moment';
-import __ from 'lodash';
-import * as constant from './constants';
+import moment from 'moment'
+import slugify from 'slug'
+import __ from 'lodash'
+import * as constant from './constants'
 
+const debug = require('debug')('base-repository')
+const processQueryDebug = require('debug')('base-repository:process-query')
 
 export default class BaseRepository {
   // TODO Refactor this to accept schemaDefinition
@@ -11,137 +14,166 @@ export default class BaseRepository {
    * @param {RepositoryConfig} config
    */
   constructor(Model, config) {
-    this._Model = Model;
-    this._config = config;
+    this._Model = Model
+    this._config = config
   }
 
   getConfig() {
-    return this._config;
+    return this._config
   }
 
   getSchema() {
-    return this._Model.schema;
+    return this._Model.schema
   }
 
-  * insert(entities) {
-    const response = yield this._Model.create(entities);
-    return Array.isArray(response) ? response.map(entity => entity.toObject()) : response.toObject();
+  insert(entities) {
+    return this._Model.create(entities).then((response) =>
+      Array.isArray(response) ? response.map(entity => entity.toObject()) : response.toObject()
+    )
   }
 
-  * getByKey(key, projection = this._config.detailProjection) {
-    const filter = {};
-    filter[this._config.key] = key;
-    return yield this._Model.findOne(filter).select(projection).lean();
-  }
-
-  * getById(id, projection = this._config.detailProjection) {
-    return yield this._Model.findOne({ _id: id }).select(projection).lean();
-  }
-
-  * getByFilter(filter, projection = this._config.detailProjection, sort = this._config.defaultSort) {
-    const condition = this.processFilter(filter || {}, this._config);
-    return yield this._Model.findOne(condition).select(projection).sort(sort).lean();
-  }
-
-  * query(filter = {}, select = {}) {
-    const condition = this.processFilter(filter || {}, this._config);
-
-    // Use select || {} to prevent case if select if null
-    const refinedSelect = {
-      projection: (select || {}).projection || this._config.queryProjection,
-      sort: (select || {}).sort || this._config.defaultSort,
-      page: (select || {}).page || 1,
-      limit: (select || {}).limit || this._config.defaultLimit
-    };
-
-    const { projection, sort, page, limit} = refinedSelect;
-
-    const count = yield this._Model.count(condition);
-    let query = this._Model.find(condition).select(projection).sort(sort);
-    if (!select.getAll) {
-      query = query.skip((page - 1) * limit).limit(limit).lean();
+  async findName(filter = {}) {
+    const { slugField, nameField, prefix } = this._config.createOption
+    const slugPrefix = slugify(prefix, { lower: true })
+    const condition = {
+      ...filter,
+      slug: new RegExp(`^${slugPrefix}-\\d+`)
     }
-    const entities = yield query;
-    if (select.getAll) {
-      return { count, entities, sort, projection };
+
+    const entities = await this._Model.find(condition).select(slugField).lean()
+    const slugs = __(entities).pluck(slugField).map(slug => parseInt(slug.replace(new RegExp(`${slugPrefix}-`), ''), 0)).value()
+    let newIdx = 1
+    if (slugs.length > 0) {
+      newIdx = __.max(slugs) + 1
     }
-    return { count, entities, filter, sort, projection, page, limit };
+
+    return {
+      [slugField]: `${slugPrefix}-${newIdx}`,
+      [nameField]: `${prefix} ${newIdx}`
+    }
   }
 
-  * all(filter = {}, select) {
-    const condition = this.processFilter(filter, this._config);
+  async create(filter = {}, overrideEntity = {}) {
+    const entity = await this.findName(filter)
+    return await this.insert({ ...this._config.defaultEntity, ...filter, ...entity, ...overrideEntity })
+  }
+
+  getByKey(key, projection = this._config.detailProjection) {
+    return this._Model.findOne({ [this._config.key]: key }).select(projection).lean()
+  }
+
+  getById(_id, projection = this._config.detailProjection) {
+    // TODO Find out why cannot select here
+    return this._Model.findOne({ _id }).select(projection).lean()
+  }
+
+  getByFilter({ filter, projection = this._config.detailProjection, sort = this._config.defaultSort }) {
+    debug(`Api Filter`, filter)
+    debug(`Api Select`, { projection, sort })
+    const condition = this.processFilter(filter || {}, this._config)
+    debug(`Mongoose Filter`, condition)
+    return this._Model.findOne(condition).select(projection).sort(sort).lean()
+  }
+
+  async query(filter = {}, {
+    projection = this._config.queryProjection,
+    sort = this._config.defaultSort, page = 1,
+    limit = this._config.defaultLimit,
+    getAll = false
+  }) {
+    debug(`Api Filter`, filter)
+    debug(`Api Select`, { projection, sort, limit, getAll })
+
+    const condition = this.processFilter(filter || {}, this._config)
+    debug(`Mongoose Filter`, condition)
+
+    const count = await this._Model.count(condition)
+
+    let query = this._Model.find(condition).select(projection).sort(sort)
+    if (!getAll) {
+      query = query.skip((page - 1) * limit).limit(limit).lean()
+    }
+
+    const entities = await query
+
+    if (getAll) {
+      return { count, entities, filter, sort, projection }
+    }
+    return { count, entities, filter, sort, projection, page, limit }
+  }
+
+  async all(filter = {}, select) {
+    const condition = this.processFilter(filter, this._config)
 
     const defaultSelect = {
       projection: this._config.queryProjection,
       sort: this._config.defaultSort
-    };
-
-    const { projection, sort} = { ...defaultSelect, ...select };
-
-    const count = yield this._Model.count(condition);
-    const entities = yield this._Model.find(condition).select(projection).sort(sort).lean();
-    return { count, entities, filter, sort };
-  }
-
-  * validateUpdate(_id, item) {
-    let entity = yield this._Model.findOne({ _id });
-    if (!entity) {
-      throw new Error('Entity not exists');
-    }
-    entity = Object.assign(entity, item);
-    yield entity.save();
-    return entity;
-  }
-
-  * update(_id, item) {
-    delete item._id;
-    return yield this._Model.update({ _id }, { $set: item });
-  }
-
-  * deleteById(_id) {
-    const entity = yield this._Model.findOne({ _id }).select('_id');
-    if (!entity) {
-      throw new Error('Not exists entity');
     }
 
-    yield this._Model.remove({ _id: _id });
-    return entity;
+    const { projection, sort } = { ...defaultSelect, ...select }
+
+    const count = await this._Model.count(condition)
+    const entities = await this._Model.find(condition).select(projection).sort(sort).lean()
+    return { count, entities, filter, sort }
   }
 
-  * deleteByKey(keyValue) {
-    const condition = {};
-    condition[this._config.key] = keyValue;
-    return yield this._Model.remove(condition);
+  async validateUpdate(_id, item) {
+    let entity = await this._Model.findOne({ _id })
+    if (!entity) {
+      throw new Error('Entity not exists')
+    }
+    entity = Object.assign(entity, item)
+    await entity.save()
+    return entity
   }
 
-  * addChild(_id, field, item) {
-    const parent = yield this._Model.findOne({ _id }).select(field);
+  update({ _id, ...item }) {
+    return this._Model.update({ _id }, { $set: item })
+  }
+
+  async deleteById(_id) {
+    const entity = await this._Model.findOne({ _id }).select('_id')
+    if (!entity) {
+      throw new Error('Not exists entity')
+    }
+    await this._Model.remove({ _id })
+    return entity
+  }
+
+  deleteByKey(keyValue) {
+    const condition = {}
+    condition[this._config.key] = keyValue
+    return this._Model.remove(condition)
+  }
+
+  async addChild(_id, field, item) {
+    const parent = await this._Model.findOne({ _id }).select(field)
     if (!parent) {
-      throw new Error('Not exists parent');
+      throw new Error('Not exists parent')
     }
 
-    const child = parent[field].create(item);
-    parent[field].push(child);
-    yield parent.save();
-    return child;
+    const child = parent[field].create(item)
+    parent[field].push(child)
+    await parent.save()
+    return child
   }
 
-  * removeChild(_id, field, itemId) {
-    const parent = yield this._Model.findOne({ _id }).select(field);
+  async removeChild(_id, field, itemId) {
+    const parent = await this._Model.findOne({ _id }).select(field)
 
     if (!parent) {
-      throw new Error('Not exists parent');
+      throw new Error('Not exists parent')
     }
 
-    const child = parent[field].id(itemId);
+    const child = parent[field].id(itemId)
 
     if (!child) {
-      throw new Error('Not exists child');
+      throw new Error('Not exists child')
     }
 
-    child.remove();
-    yield parent.save();
-    return child;
+    child.remove()
+    await parent.save()
+    return child
   }
 
   /**
@@ -149,126 +181,129 @@ export default class BaseRepository {
    * @param filter
    */
   processFilter(filter) {
-    const result = {};
+    const result = {}
     for (const item of this._config.fields) {
-      let value = filter[item.filterField];
+      let value = filter[item.filterField]
 
       if (!value || value.toString() === '') {
-        continue;
+        continue
       }
+
+      processQueryDebug(`Db Type`, item.dbType)
+      processQueryDebug(`Compare Type`, item.compareType)
 
       // Validate Value
       switch (item.dbType) {
         case constant.STRING:
           if (typeof value !== 'string') {
-            throw new Error(`${value} is not a valid String`);
+            throw new Error(`${value} is not a valid String`)
           }
-          break;
+          break
 
         case constant.INTEGER:
-          value = parseInt(value, 10);
+          value = parseInt(value, 10)
           if (!Number.isInteger(value)) {
-            throw new Error(`${value} is not a valid Number`);
+            throw new Error(`${value} is not a valid Number`)
           }
-          break;
+          break
 
         case constant.FLOAT:
-          value = parseFloat(value);
+          value = parseFloat(value)
           if (isNaN(value)) {
-            throw new Error(`${value} is not a valid Float`);
+            throw new Error(`${value} is not a valid Float`)
           }
-          break;
+          break
 
         case constant.STRING_ARRAY:
           if (!Array.isArray(value)) {
-            throw new Error(`${value} is not a valid Array`);
+            throw new Error(`${value} is not a valid Array`)
           }
 
           for (const ele of value) {
             if (typeof ele !== 'string') {
-              throw new Error(`${ele} is not a valid String`);
+              throw new Error(`${ele} is not a valid String`)
             }
           }
-          break;
+          break
         case constant.INTEGER_ARRAY:
           if (!Array.isArray(value)) {
-            throw new Error(`${value} is not a valid Array`);
+            throw new Error(`${value} is not a valid Array`)
           }
 
-          value = value.map(ele => parseInt(ele, 10));
+          value = value.map(ele => parseInt(ele, 10))
 
           if (__.any(value, ele => !Number.isInteger(ele))) {
-            throw new Error(`Cannot parse ${value} into array of integer`);
+            throw new Error(`Cannot parse ${value} into array of integer`)
           }
-          break;
+          break
 
         case constant.FLOAT_ARRAY:
           if (!Array.isArray(value)) {
-            throw new Error(`${value} is not a valid Array`);
+            throw new Error(`${value} is not a valid Array`)
           }
 
-          value = value.map(ele => parseFloat(ele));
+          value = value.map(ele => parseFloat(ele))
 
           if (__.any(value, ele => isNaN(ele))) {
-            throw new Error(`Cannot parse ${value} into array of integer`);
+            throw new Error(`Cannot parse ${value} into array of integer`)
           }
-          break;
+          break
 
         case constant.BOOLEAN:
-          value = value.toString().toLowerCase() === 'true';
+          value = value.toString().toLowerCase() === 'true'
           if (value !== true && value !== false) {
-            throw new Error(`${value} is not a valid Boolean`);
+            throw new Error(`${value} is not a valid Boolean`)
           }
-          break;
+          break
 
         case constant.DATE:
-          value = moment(value, this._config.defaultDateFormat);
+          value = moment(value, this._config.defaultDateFormat)
           if (!value.isValid()) {
-            throw new Error(`${value} is not a valid Date`);
+            throw new Error(`${value} is not a valid Date`)
           }
-          break;
+          break
         default:
-          throw new Error('dbType must be in STRING, INTEGER, FLOAT, DATE or BOOLEAN, STRING_ARRAY, INTEGER_ARRAY, FLOAT_ARRAY');
+          throw new Error('dbType must be in STRING, INTEGER, FLOAT, DATE or BOOLEAN, STRING_ARRAY, INTEGER_ARRAY, FLOAT_ARRAY')
       }
 
       // Process Data
       switch (item.compareType) {
         case constant.EQUAL:
-          result[item.dbField] = value;
-          break;
+          result[item.dbField] = value
+          break
         case constant.GT:
-          result[item.dbField] = { ...result[item.dbField], $gt: value };
-          break;
+          result[item.dbField] = { ...result[item.dbField], $gt: value }
+          break
         case constant.GTE:
-          result[item.dbField] = { ...result[item.dbField], $gte: value };
-          break;
+          result[item.dbField] = { ...result[item.dbField], $gte: value }
+          break
         case constant.LT:
-          result[item.dbField] = { ...result[item.dbField], $lt: value };
-          break;
+          result[item.dbField] = { ...result[item.dbField], $lt: value }
+          break
         case constant.LTE:
-          result[item.dbField] = { ...result[item.dbField], $lte: value };
-          break;
+          result[item.dbField] = { ...result[item.dbField], $lte: value }
+          break
         case constant.REG_EX:
-          result[item.dbField] = new RegExp(value);
-          break;
+          result[item.dbField] = new RegExp(value)
+          break
         case constant.REG_EX_I:
-          result[item.dbField] = new RegExp(value, 'i');
-          break;
+          result[item.dbField] = new RegExp(value, 'i')
+          break
         case constant.EXISTS:
-          result[item.dbField] = { ...result[item.dbField], $exists: value };
-          break;
+          result[item.dbField] = { ...result[item.dbField], $exists: value }
+          break
         case constant.FULL_TEXT:
-          result.$text = { $search: value };
-          break;
+          result.$text = { $search: value }
+          break
         case constant.CONTAIN:
-          result[item.dbField] = { $in: value };
-          break;
+          result[item.dbField] = { $in: value }
+          break
 
         default:
-          throw new Error('compareType must be in EQUAL, GT, GTE, LT, LTE, REG_EX, REG_EX_I, FULL_TEXT, EXISTS');
+          throw new Error('compareType must be in EQUAL, GT, GTE, LT, LTE, REG_EX, REG_EX_I, FULL_TEXT, EXISTS')
       }
     }
-    return result;
+    return result
   }
 }
 
@@ -280,6 +315,8 @@ export default class BaseRepository {
  * @property {String} queryProjection
  * @property {String} detailProjection
  * @property {String} defaultDateFormat - Default to YYYY-MM-DD HH:mm
+ * @property {Object} createOption
+ * @property {Object} defaultEntity
  */
 
 /**

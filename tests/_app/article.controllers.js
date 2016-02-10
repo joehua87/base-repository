@@ -1,8 +1,7 @@
-import ArticleRepository from './article.repository.js';
-import { createController } from '../../src';
+import ArticleRepository from './article.repository.js'
+import { createController } from '../../src'
 
-const repository = new ArticleRepository();
+const repository = new ArticleRepository()
+const controller = createController(repository)
 
-const controller = createController(repository);
-
-export default {...controller};
+export default controller
