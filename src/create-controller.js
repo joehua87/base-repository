@@ -1,4 +1,4 @@
-const debug = require('debug')('create-controller')
+const debug = require('debug')('base-repository:create-controller')
 
 // Export here for easy testing
 export function parseRequestQuery(request) {
@@ -128,9 +128,10 @@ export function createController(repository) {
   function* getByFilter() {
     const filter = this.request.query.filter
     const sort = this.request.query.sort
+    const projection = this.request.query.projection
     debug(`get by filter (sort = ${sort})`)
     debug(filter)
-    const response = yield repository.getByFilter({ filter, sort })
+    const response = yield repository.getByFilter(filter, { sort, projection })
     this.status = 200
     this.body = response
   }

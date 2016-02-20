@@ -3,8 +3,8 @@ import slugify from 'slug'
 import __ from 'lodash'
 import * as constant from './constants'
 
-const debug = require('debug')('base-repository')
-const processQueryDebug = require('debug')('base-repository:process-query')
+const debug = require('debug')('base-repository:base-repository')
+const processQueryDebug = require('debug')('base-repository:base-repository:process-query')
 
 export default class BaseRepository {
   // TODO Refactor this to accept schemaDefinition
@@ -67,25 +67,38 @@ export default class BaseRepository {
     return this._Model.findOne({ _id }).select(projection).lean()
   }
 
-  getByFilter({ filter, projection = this._config.detailProjection, sort = this._config.defaultSort }) {
-    debug(`Api Filter`, filter)
-    debug(`Api Select`, { projection, sort })
+  getByFilter(filter = {}, selection = {}) {
+    const select = {
+      projection: this._config.detailProjection,
+      sort: this._config.defaultSort,
+      ...selection
+    }
+
+    debug(`getByFilter - Api Filter`, filter)
+    debug(`getByFilter - Api Select`, select)
+
+    const { projection, sort } = select
     const condition = this.processFilter(filter || {}, this._config)
-    debug(`Mongoose Filter`, condition)
+    debug(`getByFilter - Mongoose Filter`, condition)
     return this._Model.findOne(condition).select(projection).sort(sort).lean()
   }
 
-  async query(filter = {}, {
-    projection = this._config.queryProjection,
-    sort = this._config.defaultSort, page = 1,
-    limit = this._config.defaultLimit,
-    getAll = false
-  }) {
-    debug(`Api Filter`, filter)
-    debug(`Api Select`, { projection, sort, limit, getAll })
+  async query(filter = {}, selection = {}) {
+    const select = {
+      projection: this._config.queryProjection,
+      sort: this._config.defaultSort,
+      page: 1,
+      limit: this._config.defaultLimit,
+      getAll: false,
+      ...selection
+    }
 
+    debug(`query - Api Filter`, filter)
+    debug(`query - Api Select`, select)
+
+    const { projection, sort, page, limit, getAll } = select
     const condition = this.processFilter(filter || {}, this._config)
-    debug(`Mongoose Filter`, condition)
+    debug(`query - Mongoose Filter`, condition)
 
     const count = await this._Model.count(condition)
 
