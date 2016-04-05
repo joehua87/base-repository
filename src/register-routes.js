@@ -2,21 +2,22 @@
  * Register Routes for Koa App
  * @param router Koa Router
  */
-export default function registerRoute(router, controller, routeName) {
-  router.get(`/${routeName}/query`, controller.query)
-  router.get(`/${routeName}/detail/:key`, controller.getByKey)
-  router.get(`/${routeName}/id/:id`, controller.getById)
-  router.get(`/${routeName}/detail-by-filter`, controller.getByFilter)
-  // TODO getByFilter
-  router.post(`/${routeName}`, controller.insert)
-  router.post(`/${routeName}/create`, controller.create)
-  router.put(`/${routeName}/update`, controller.update)
-  router.put(`/${routeName}/validate-update`, controller.validateUpdate)
-  router.del(`/${routeName}/delete/:id`, controller.deleteById)
+export default function registerRoute(router, controller, routeName, middleware: Array = []) {
+  router.get(`/${routeName}/query`, ...middleware, ...middleware, controller.query)
+  router.get(`/${routeName}/detail/:key`, ...middleware, controller.getByKey)
+  router.get(`/${routeName}/id/:id`, ...middleware, controller.getById)
+  router.get(`/${routeName}/ids`, ...middleware, controller.getByIds)
+  router.get(`/${routeName}/detail-by-filter`, ...middleware, controller.getByFilter)
 
-  router.put(`/${routeName}/:id/add-child/:field`, controller.addChild)
-  router.del(`/${routeName}/:id/remove-child/:field/:itemId`, controller.removeChild)
+  router.post(`/${routeName}`, ...middleware, controller.insert)
+  router.post(`/${routeName}/create`, ...middleware, controller.create)
+  router.put(`/${routeName}/update`, ...middleware, controller.update)
+  router.put(`/${routeName}/validate-update`, ...middleware, controller.validateUpdate)
+  router.del(`/${routeName}/delete/:id`, ...middleware, controller.deleteById)
 
-  router.get(`/${routeName}/get-config`, controller.getConfig)
-  router.get(`/${routeName}/get-schema`, controller.getSchema)
+  router.put(`/${routeName}/:id/add-child/:field`, ...middleware, controller.addChild)
+  router.del(`/${routeName}/:id/remove-child/:field/:itemId`, ...middleware, controller.removeChild)
+
+  router.get(`/${routeName}/get-config`, ...middleware, controller.getConfig)
+  router.get(`/${routeName}/get-schema`, ...middleware, controller.getSchema)
 }

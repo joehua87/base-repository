@@ -63,8 +63,11 @@ export default class BaseRepository {
   }
 
   getById(_id, projection = this._config.detailProjection) {
-    // TODO Find out why cannot select here
     return this._Model.findOne({ _id }).select(projection).lean()
+  }
+
+  getByIds(ids, projection = this._config.detailProjection) {
+    return this._Model.find({ _id: { $in: [ids] } }).select(projection).lean()
   }
 
   getByFilter(filter = {}, selection = {}) {
@@ -228,8 +231,9 @@ export default class BaseRepository {
           break
 
         case constant.STRING_ARRAY:
+          if (typeof value === 'string') value = [value]
           if (!Array.isArray(value)) {
-            throw new Error(`${value} is not a valid Array`)
+            throw new Error(`${value} is not a valid String Array`)
           }
 
           for (const ele of value) {
@@ -239,8 +243,9 @@ export default class BaseRepository {
           }
           break
         case constant.INTEGER_ARRAY:
+          if (typeof value === 'number') value = [value]
           if (!Array.isArray(value)) {
-            throw new Error(`${value} is not a valid Array`)
+            throw new Error(`${value} is not a valid Number Array`)
           }
 
           value = value.map(ele => parseInt(ele, 10))
@@ -251,8 +256,9 @@ export default class BaseRepository {
           break
 
         case constant.FLOAT_ARRAY:
+          if (typeof value === 'number') value = [value]
           if (!Array.isArray(value)) {
-            throw new Error(`${value} is not a valid Array`)
+            throw new Error(`${value} is not a valid Number Array`)
           }
 
           value = value.map(ele => parseFloat(ele))

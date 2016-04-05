@@ -1,3 +1,10 @@
+## 0.7.0
+* Query by multiple ids
+
+## 0.6.0
+* Delete draft database
+* Upload Controller
+
 ## 0.5.0
 * Refactor
 * Update to babel 6

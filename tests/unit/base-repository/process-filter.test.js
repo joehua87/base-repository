@@ -73,4 +73,19 @@ describe('Process Filter', () => {
     const filter = repository.processFilter({ commentrPoints: [1.1, 2.4, 4.4] })
     expect(filter).to.deep.equal({ 'comments.point': { $in: [1.1, 2.4, 4.4] } })
   })
+
+  it('Contains array of string - need convert', () => {
+    const filter = repository.processFilter({ commentUsernames: 'john' })
+    expect(filter).to.deep.equal({ 'comments.username': { $in: ['john'] } })
+  })
+
+  it('Contains array of integer - need convert', () => {
+    const filter = repository.processFilter({ commentUserIds: 1 })
+    expect(filter).to.deep.equal({ 'comments.userId': { $in: [1] } })
+  })
+
+  it('Contains array of float - need convert', () => {
+    const filter = repository.processFilter({ commentrPoints: 1.1 })
+    expect(filter).to.deep.equal({ 'comments.point': { $in: [1.1] } })
+  })
 })

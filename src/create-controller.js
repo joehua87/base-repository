@@ -115,11 +115,30 @@ export function createController(repository) {
 
   function* getById() {
     const id = this.params.id
+    const projection = this.request.query.projection
     debug(`get by id: ${id}`)
     if (!id) {
       this.throw(400, 'Params require query')
     }
-    const response = yield repository.getById(id)
+    const response = yield repository.getById(id, projection)
+    debug(`get bt id response: ${response}`)
+    this.status = 200
+    this.body = response
+  }
+
+  function* getByIds() {
+    let ids = this.request.query.ids || []
+    const projection = this.request.query.projection
+
+    if (typeof ids === 'string') {
+      ids = [ids]
+    }
+
+    debug(`get by id: ${ids.join(', ')}`)
+    if (!ids) {
+      this.throw(400, 'Params require query')
+    }
+    const response = yield repository.getByIds(ids, projection)
     debug(`get bt id response: ${response}`)
     this.status = 200
     this.body = response
@@ -227,6 +246,7 @@ export function createController(repository) {
     validateUpdate,
     getByKey,
     getById,
+    getByIds,
     getByFilter,
     deleteById,
     addChild,

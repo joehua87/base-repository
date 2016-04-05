@@ -6,8 +6,9 @@ import timePlugin from './time-plugin'
 import nestOmit from './nest-omit'
 import nestOmitFile from './nest-omit-file'
 import readFromCsv from './read-from-csv'
+import uploadController from './upload.controllers.js'
 
 export {
   BaseRepository, constants, createController, registerRoutes, timePlugin,
-  nestOmit, nestOmitFile, readFromCsv
+  nestOmit, nestOmitFile, readFromCsv, uploadController
 }

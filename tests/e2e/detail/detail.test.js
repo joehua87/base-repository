@@ -23,6 +23,18 @@ describe('Detail Api', () => {
       })
   })
 
+  it('by ids - has response', (done) => {
+    const expectResponse = require('./test-data/expect-response.json')
+    request.get('/article/ids')
+      .query({
+        ids: ['567f8a571c17d9c58394970a']
+      })
+      .end((error, { body }) => {
+        expect(body[0]).to.containSubset(expectResponse)
+        done()
+      })
+  })
+
   it('by id - not exists', (done) => {
     request.get('/article/id/567f8a571c17d9c583949999')
       .end((error, { body }) => {
