@@ -28,7 +28,7 @@ export function parseRequestQuery(request) {
   return { filter, select }
 }
 
-export function createController(repository) {
+export default function createController(repository) {
   function* query() {
     const { filter, select } = parseRequestQuery(this.request)
     const response = yield repository.query(filter, select)

@@ -1,5 +1,4 @@
 import { expect } from 'chai'
-import BaseRepository from '../base-repository'
 import { config } from './article.model.js'
 import parseQuery from '../parse-query'
 

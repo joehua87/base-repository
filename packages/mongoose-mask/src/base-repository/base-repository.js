@@ -5,7 +5,6 @@ import parseQuery from './parse-query'
 const debug = require('debug')('mongoose-mask:base-repository')
 
 export default class BaseRepository {
-  // TODO Refactor this to accept schemaDefinition
   /**
    *
    * @param Model
@@ -40,7 +39,11 @@ export default class BaseRepository {
     }
 
     const entities = await this._Model.find(condition).select(slugField).lean()
-    const slugs = __(entities).pluck(slugField).map(slug => parseInt(slug.replace(new RegExp(`${slugPrefix}-`), ''), 0)).value()
+    const slugs = entities.map(entity => {
+      const slug = entity[slugField]
+      return parseInt(slug.replace(new RegExp(`${slugPrefix}-`), ''), 10)
+    })
+
     let newIdx = 1
     if (slugs.length > 0) {
       newIdx = __.max(slugs) + 1
@@ -76,13 +79,17 @@ export default class BaseRepository {
       ...selection
     }
 
-    debug(`getByFilter - Api Filter`, filter)
-    debug(`getByFilter - Api Select`, select)
+    debug('getByFilter - Api Filter', filter)
+    debug('getByFilter - Api Select', select)
 
     const { projection, sort } = select
-    const condition = this.processFilter(filter || {}, this._config)
-    debug(`getByFilter - Mongoose Filter`, condition)
-    return this._Model.findOne(condition).select(projection).sort(sort).lean()
+    const condition = parseQuery(filter || {}, this._config)
+    debug('getByFilter - Mongoose Filter', condition)
+    return this._Model
+      .findOne(condition)
+      .select(projection)
+      .sort(sort)
+      .lean()
   }
 
   async query(filter = {}, selection = {}) {
@@ -95,12 +102,12 @@ export default class BaseRepository {
       ...selection
     }
 
-    debug(`query - Api Filter`, filter)
-    debug(`query - Api Select`, select)
+    debug('query - Api Filter', filter)
+    debug('query - Api Select', select)
 
     const { projection, sort, page, limit, getAll } = select
-    const condition = this.processFilter(filter || {}, this._config)
-    debug(`query - Mongoose Filter`, condition)
+    const condition = parseQuery(filter || {}, this._config)
+    debug('query - Mongoose Filter', condition)
 
     const count = await this._Model.count(condition)
 
@@ -118,7 +125,7 @@ export default class BaseRepository {
   }
 
   async all(filter = {}, select) {
-    const condition = this.processFilter(filter, this._config)
+    const condition = parseQuery(filter, this._config)
 
     const defaultSelect = {
       projection: this._config.queryProjection,
@@ -128,7 +135,11 @@ export default class BaseRepository {
     const { projection, sort } = { ...defaultSelect, ...select }
 
     const count = await this._Model.count(condition)
-    const entities = await this._Model.find(condition).select(projection).sort(sort).lean()
+    const entities = await this._Model
+      .find(condition)
+      .select(projection)
+      .sort(sort)
+      .lean()
     return { count, entities, filter, sort }
   }
 
