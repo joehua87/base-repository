@@ -1,0 +1,27 @@
+{
+  "name": "mongoose-mask",
+  "version": "0.1.0",
+  "description": "",
+  "main": "lib",
+  "scripts": {
+    "build": "../../node_modules/.bin/cross-env NODE_ENV=production babel ./src --out-dir ./lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joehua87/base-repository.git"
+  },
+  "keywords": [
+    "models"
+  ],
+  "author": "joehua",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/buzzim/buzz-models#readme",
+  "dependencies": {
+    "lodash": "^4.13.1",
+    "mongoose-time-plugin": "^0.1.0",
+    "mongoose": "^4.4.19"
+  }
+}

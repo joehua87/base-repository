@@ -3,7 +3,7 @@
  * @param router Koa Router
  */
 export default function registerRoute(router, controller, routeName, middleware: Array = []) {
-  router.get(`/${routeName}/query`, ...middleware, ...middleware, controller.query)
+  router.get(`/${routeName}/query`, ...middleware, controller.query)
   router.get(`/${routeName}/detail/:key`, ...middleware, controller.getByKey)
   router.get(`/${routeName}/id/:id`, ...middleware, controller.getById)
   router.get(`/${routeName}/ids`, ...middleware, controller.getByIds)

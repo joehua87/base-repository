@@ -1,0 +1,25 @@
+{
+  "name": "mongoose-time-plugin",
+  "version": "0.1.0",
+  "description": "Mongoose Plugin for createdTime & modifiedTime",
+  "main": "src",
+  "scripts": {
+    "build": ""
+  },
+  "files": [
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joehua87/base-repository.git"
+  },
+  "keywords": [
+    "models"
+  ],
+  "author": "joehua",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/buzzim/buzz-models#readme",
+  "dependencies": {
+    "mongoose": "^4.4.19"
+  }
+}

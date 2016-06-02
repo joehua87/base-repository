@@ -1,7 +1,7 @@
 import moment from 'moment'
 import slugify from 'slug'
 import __ from 'lodash'
-import * as constant from './constants'
+import * as constant from './../constants'
 
 const debug = require('debug')('base-repository:base-repository')
 const processQueryDebug = require('debug')('base-repository:base-repository:process-query')
@@ -250,7 +250,7 @@ export default class BaseRepository {
 
           value = value.map(ele => parseInt(ele, 10))
 
-          if (__.any(value, ele => !Number.isInteger(ele))) {
+          if (__.some(value, ele => !Number.isInteger(ele))) {
             throw new Error(`Cannot parse ${value} into array of integer`)
           }
           break
@@ -263,7 +263,7 @@ export default class BaseRepository {
 
           value = value.map(ele => parseFloat(ele))
 
-          if (__.any(value, ele => isNaN(ele))) {
+          if (__.some(value, ele => isNaN(ele))) {
             throw new Error(`Cannot parse ${value} into array of integer`)
           }
           break

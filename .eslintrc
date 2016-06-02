@@ -1,13 +1,12 @@
 {
   "parser": "babel-eslint",
-  "extends": "airbnb/base",
+  "extends": "airbnb-base",
   "env": {
     "browser": true,
     "node": true,
     "mocha": true
   },
   "rules": {
-    // not sure why airbnb turned this on. gross!
     "indent": [
       2,
       2,
@@ -15,14 +14,13 @@
         "SwitchCase": 1
       }
     ],
-    "no-console": 0,
-    "no-alert": 0,
-    "comma-dangle": 0,
-    "max-len": 0,
     "semi": [
       2,
       "never"
-    ]
+    ],
+    "no-underscore-dangle": 0,
+    "comma-dangle": 0,
+    "max-len": 0
   },
   "plugins": [
     "babel"
@@ -34,8 +32,5 @@
         "src"
       ]
     }
-  },
-  "globals": {
-    "BaseRepository": true
   }
 }

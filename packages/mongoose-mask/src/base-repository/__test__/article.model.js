@@ -2,8 +2,8 @@ import { Schema } from 'mongoose'
 import {
   EQUAL, GTE, LTE, REG_EX, REG_EX_I, FULL_TEXT, EXISTS, CONTAIN,
   STRING, DATE, INTEGER, FLOAT, BOOLEAN, STRING_ARRAY, INTEGER_ARRAY, FLOAT_ARRAY
-} from '../../packages/mongoose-mask/src/constants'
-import { timePlugin } from '../../src'
+} from '../../constants'
+import timePlugin from 'mongoose-time-plugin'
 
 export const schemaName = 'Article'
 export const routeName = 'article'

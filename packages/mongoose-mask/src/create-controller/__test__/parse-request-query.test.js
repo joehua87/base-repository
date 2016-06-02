@@ -1,7 +1,7 @@
 import { expect } from 'chai'
-import { parseRequestQuery } from '../../../src/create-controller'
+import { parseRequestQuery } from '../create-koa-controller'
 
-describe('Create Controller - Parse Query Request', () => {
+describe('Create Koa Controller - Parse Query Request', () => {
   it('should ignore invalid page & limit', () => {
     const request = {
       query: {
