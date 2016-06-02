@@ -7,7 +7,6 @@
     "build": "../../node_modules/.bin/cross-env NODE_ENV=production babel ./src --out-dir ./lib",
     "prepublish": "npm run build",
     "test": "../../node_modules/.bin/babel-node ../../node_modules/.bin/babel-istanbul cover ../../node_modules/.bin/_mocha -- 'src/**/*.test.js' -t 10000"
-
   },
   "files": [
     "lib"
