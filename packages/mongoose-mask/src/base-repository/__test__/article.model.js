@@ -1,7 +1,6 @@
 import { Schema } from 'mongoose'
 import {
   EQUAL, GTE, LTE, REG_EX, REG_EX_I, FULL_TEXT, EXISTS, CONTAIN,
-  STRING, DATE, INTEGER, FLOAT, BOOLEAN, STRING_ARRAY, INTEGER_ARRAY, FLOAT_ARRAY
 } from '../../constants'
 import timePlugin from 'mongoose-time-plugin'
 
@@ -53,108 +52,108 @@ export const config = {
       filterField: 'commentUsername',
       dbField: 'comments.username',
       compareType: EQUAL,
-      dbType: STRING
+      dbType: String
     },
     {
       filterField: 'commentUsernames',
       dbField: 'comments.username',
       compareType: CONTAIN,
-      dbType: STRING_ARRAY
+      dbType: Array
     },
     {
       filterField: 'commentUserIds',
       dbField: 'comments.userId',
       compareType: CONTAIN,
-      dbType: INTEGER_ARRAY
+      dbType: Array
     },
     {
       filterField: 'commentrPoints',
       dbField: 'comments.point',
       compareType: CONTAIN,
-      dbType: FLOAT_ARRAY
+      dbType: Array
     },
     {
       filterField: 'title',
       dbField: 'title',
       compareType: REG_EX_I,
-      dbType: STRING
+      dbType: String
     },
     {
       filterField: 'slug',
       dbField: 'slug',
       compareType: REG_EX,
-      dbType: STRING
+      dbType: String
     },
     {
       filterField: 'website',
       dbField: 'website',
       compareType: EQUAL,
-      dbType: STRING
+      dbType: String
     },
     {
       filterField: 'tag',
       dbField: 'tags.slug',
       compareType: EQUAL,
-      dbType: STRING
+      dbType: String
     },
     {
       filterField: 'tags',
       dbField: 'tags.slug',
       compareType: CONTAIN,
-      dbType: STRING_ARRAY
+      dbType: Array
     },
     {
       filterField: 'minCommentsCount',
       dbField: 'commentsCount',
       compareType: GTE,
-      dbType: INTEGER
+      dbType: Number
     },
     {
       filterField: 'maxCommentsCount',
       dbField: 'commentsCount',
       compareType: LTE,
-      dbType: INTEGER
+      dbType: Number
     },
     {
       filterField: 'minConversionRate',
       dbField: 'conversionRate',
       compareType: GTE,
-      dbType: FLOAT
+      dbType: Number
     },
     {
       filterField: 'maxConversionRate',
       dbField: 'conversionRate',
       compareType: LTE,
-      dbType: FLOAT
+      dbType: Number
     },
     {
       filterField: 'fromModifiedTime',
       dbField: 'modifiedTime',
       compareType: GTE,
-      dbType: DATE
+      dbType: Date
     },
     {
       filterField: 'toModifiedTime',
       dbField: 'modifiedTime',
       compareType: LTE,
-      dbType: DATE
+      dbType: Date
     },
     {
       filterField: 'isFeatured',
       dbField: 'isFeatured',
       compareType: EQUAL,
-      dbType: BOOLEAN
+      dbType: Boolean
     },
     {
       filterField: 'hasReview',
       dbField: 'reviews',
       compareType: EXISTS,
-      dbType: BOOLEAN
+      dbType: Boolean
     },
     {
       filterField: 'text',
       compareType: FULL_TEXT,
-      dbType: STRING
+      dbType: String
     }
   ]
 }

@@ -9,13 +9,3 @@ export const REG_EX_I = 'REG_EX_I'
 export const FULL_TEXT = 'FULL_TEXT'
 export const EXISTS = 'EXISTS'
 export const CONTAIN = 'CONTAIN'
-
-// Db Type
-export const STRING = 'STRING'
-export const DATE = 'DATE'
-export const INTEGER = 'INTEGER'
-export const FLOAT = 'FLOAT'
-export const BOOLEAN = 'BOOLEAN'
-export const STRING_ARRAY = 'STRING_ARRAY'
-export const INTEGER_ARRAY = 'INTEGER_ARRAY'
-export const FLOAT_ARRAY = 'FLOAT_ARRAY'
