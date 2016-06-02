@@ -1,6 +1,6 @@
 {
   "name": "mongoose-mask",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "main": "lib",
   "scripts": {
@@ -23,7 +23,7 @@
   "homepage": "https://bitbucket.org/buzzim/buzz-models#readme",
   "dependencies": {
     "lodash": "^4.13.1",
-    "mongoose-time-plugin": "^0.1.0"
+    "mongoose-time-plugin": "^0.1.2"
   },
   "devDependencies": {
     "koa": "^1.2.0",
