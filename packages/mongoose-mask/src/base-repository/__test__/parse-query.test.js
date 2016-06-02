@@ -1,91 +1,91 @@
 import { expect } from 'chai'
 import BaseRepository from '../base-repository'
-import * as ArticleSchema from './article.model.js'
-const repository = new BaseRepository(ArticleSchema.schema, ArticleSchema.config)
+import { config } from './article.model.js'
+import parseQuery from '../parse-query'
 
 describe('Process Filter', () => {
   it('Full Text Search', () => {
-    const filter = repository.processFilter({ text: 'lorem' })
+    const filter = parseQuery({ text: 'lorem' }, config)
     expect(filter).to.deep.equal({ $text: { $search: 'lorem' } })
   })
 
   it('Regular Expression Case Insensitivity', () => {
-    const filter = repository.processFilter({ title: 'lorem' })
+    const filter = parseQuery({ title: 'lorem' }, config)
     expect(filter).to.deep.equal({ title: /lorem/i })
   })
 
   it('Regular Expression Case Sensitivity', () => {
-    const filter = repository.processFilter({ slug: 'lorem' })
+    const filter = parseQuery({ slug: 'lorem' }, config)
     expect(filter).to.deep.equal({ slug: /lorem/ })
   })
 
   it('Boolean', () => {
-    const filter = repository.processFilter({ isFeatured: true })
+    const filter = parseQuery({ isFeatured: true }, config)
     expect(filter).to.deep.equal({ isFeatured: true })
   })
 
   it('Boolean with string - valid true', () => {
-    const filter = repository.processFilter({ isFeatured: 'true' })
+    const filter = parseQuery({ isFeatured: 'true' }, config)
     expect(filter).to.deep.equal({ isFeatured: true })
   })
 
   it('Boolean with string - valid false', () => {
-    const filter = repository.processFilter({ isFeatured: 'false' })
+    const filter = parseQuery({ isFeatured: 'false' }, config)
     expect(filter).to.deep.equal({ isFeatured: false })
   })
 
   it('Boolean with string - any other text will equal false', () => {
-    const filter = repository.processFilter({ isFeatured: 'text' })
+    const filter = parseQuery({ isFeatured: 'text' }, config)
     expect(filter).to.deep.equal({ isFeatured: false })
   })
 
   it('Exists', () => {
-    const filter = repository.processFilter({ hasReview: true })
+    const filter = parseQuery({ hasReview: true }, config)
     expect(filter).to.deep.equal({ reviews: { $exists: true } })
   })
 
   it('Greater Than', () => {
-    const filter = repository.processFilter({ minCommentsCount: 10 })
+    const filter = parseQuery({ minCommentsCount: 10 }, config)
     expect(filter).to.deep.equal({ commentsCount: { $gte: 10 } })
   })
 
   it('Multiple conditions', () => {
-    const filter = repository.processFilter({ maxCommentsCount: 10, minConversionRate: 0.10 })
+    const filter = parseQuery({ maxCommentsCount: 10, minConversionRate: 0.10 }, config)
     expect(filter).to.deep.equal({ commentsCount: { $lte: 10 }, conversionRate: { $gte: 0.1 } })
   })
 
   it('Multiple conditions on 1 field', () => {
-    const filter = repository.processFilter({ minCommentsCount: 5, maxCommentsCount: 10 })
+    const filter = parseQuery({ minCommentsCount: 5, maxCommentsCount: 10 }, config)
     expect(filter).to.deep.equal({ commentsCount: { $gte: 5, $lte: 10 } })
   })
 
   it('Contains array of string', () => {
-    const filter = repository.processFilter({ commentUsernames: ['john', 'philip', 'peter'] })
+    const filter = parseQuery({ commentUsernames: ['john', 'philip', 'peter'] }, config)
     expect(filter).to.deep.equal({ 'comments.username': { $in: ['john', 'philip', 'peter'] } })
   })
 
   it('Contains array of integer', () => {
-    const filter = repository.processFilter({ commentUserIds: [1, 2, 3] })
+    const filter = parseQuery({ commentUserIds: [1, 2, 3] }, config)
     expect(filter).to.deep.equal({ 'comments.userId': { $in: [1, 2, 3] } })
   })
 
   it('Contains array of float', () => {
-    const filter = repository.processFilter({ commentrPoints: [1.1, 2.4, 4.4] })
-    expect(filter).to.deep.equal({ 'comments.point': { $in: [1.1, 2.4, 4.4] } })
+    const filter = parseQuery({ commentrPoints: [1.1, 2.4, 4.4] }, config)
+    expect(filter).to.deep.equal({ 'comments.point': { $in: [1.1, 2.4, 4.4] } }, config)
   })
 
   it('Contains array of string - need convert', () => {
-    const filter = repository.processFilter({ commentUsernames: 'john' })
+    const filter = parseQuery({ commentUsernames: 'john' }, config)
     expect(filter).to.deep.equal({ 'comments.username': { $in: ['john'] } })
   })
 
   it('Contains array of integer - need convert', () => {
-    const filter = repository.processFilter({ commentUserIds: 1 })
+    const filter = parseQuery({ commentUserIds: 1 }, config)
     expect(filter).to.deep.equal({ 'comments.userId': { $in: [1] } })
   })
 
   it('Contains array of float - need convert', () => {
-    const filter = repository.processFilter({ commentrPoints: 1.1 })
+    const filter = parseQuery({ commentrPoints: 1.1 }, config)
     expect(filter).to.deep.equal({ 'comments.point': { $in: [1.1] } })
   })
 })
