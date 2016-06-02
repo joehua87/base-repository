@@ -11,7 +11,7 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "build": "npm run lint && lerna run build",
+    "build": "npm run test && lerna run build",
     "lerna": "lerna",
     "lint": "eslint packages/*/src packages/*/tests",
     "test": "npm run lint && lerna run test"

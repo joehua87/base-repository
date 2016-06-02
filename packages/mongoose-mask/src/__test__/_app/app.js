@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import mongoose from 'mongoose'
 import koa from 'koa'
 import KoaRouter from 'koa-router'
@@ -6,12 +8,11 @@ import koaJson from 'koa-json'
 import koaQs from 'koa-qs'
 
 import * as articleSchema from './article.model.js'
-import config from './config'
 
 mongoose.model(articleSchema.schemaName, articleSchema.schema)
 
 const app = koa()
-app.use(function *(next) {
+app.use(function* handleError(next) {
   try {
     yield next
   } catch (err) {
@@ -32,9 +33,5 @@ const router = new KoaRouter()
 app.use(router.middleware())
 
 require('./article.routes.js').default(router)
-
-app.listen(config.port)
-
-console.log(`App started. Go to http://localhost:${config.port}/article/query`)
 
 export default app
