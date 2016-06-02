@@ -20,7 +20,7 @@
   "author": "joehua",
   "license": "MIT",
   "homepage": "https://bitbucket.org/buzzim/buzz-models#readme",
-  "dependencies": {
+  "devDependencies": {
     "mongoose": "^4.4.19"
   }
 }
