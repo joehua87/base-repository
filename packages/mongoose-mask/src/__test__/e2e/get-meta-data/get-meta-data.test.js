@@ -8,8 +8,9 @@ describe('Detail Api', () => {
 
   it('get config', (done) => {
     request.get('/article/get-config')
-      .end((error, { status }) => {
+      .end((error, { status, body }) => {
         expect(status).to.equal(200)
+        expect(body.fields).to.all.have.property('dbType')
         done()
       })
   })

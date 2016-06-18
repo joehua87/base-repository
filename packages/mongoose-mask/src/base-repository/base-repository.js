@@ -16,7 +16,10 @@ export default class BaseRepository {
   }
 
   getConfig() {
-    return this._config
+    return {
+      ...this._config,
+      fields: this._config.fields.map((field) => ({ ...field, dbType: field.dbType.name }))
+    }
   }
 
   getSchema() {
