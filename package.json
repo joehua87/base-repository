@@ -6,7 +6,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "npm run test && lerna run build",
-    "lerna": "lerna",
+    "publish": "cross-env npm run build && lerna publish",
     "lint": "eslint packages/*/src packages/*/tests",
     "test": "npm run lint && lerna run test"
   },
