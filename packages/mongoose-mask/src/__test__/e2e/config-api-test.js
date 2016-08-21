@@ -31,8 +31,8 @@ export function setUpAndTearDown(initialData) {
   })
 }
 
-export function createRequest(app) {
-  return require('supertest').agent(app.listen())
+export function createKoaRequest(koaApp) {
+  return require('supertest').agent(koaApp.listen())
 }
 
 const chai = require('chai')

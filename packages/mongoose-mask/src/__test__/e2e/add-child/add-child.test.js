@@ -1,61 +1,65 @@
-import { createRequest, expect, setUpAndTearDown } from '../config-api-test'
-import app from '../../_app/app'
+import { createKoaRequest, expect, setUpAndTearDown } from '../config-api-test'
+import koaApp from '../../_koaApp/app'
 
-const request = createRequest(app)
+const koaRequest = createKoaRequest(koaApp)
 
-describe('Add Child Api', () => {
-  const initialData = [
-    {
-      // schema,
-      schemaName: 'Article',
-      entities: require('../_test-data/short-list-entities.json'),
-    }
-  ]
+const runTest = (request) => {
+  describe('Add Child Api', () => {
+    const initialData = [
+      {
+        // schema,
+        schemaName: 'Article',
+        entities: require('../_test-data/short-list-entities.json'),
+      }
+    ]
 
-  setUpAndTearDown(initialData)
+    setUpAndTearDown(initialData)
 
-  it('invalid', (done) => {
-    request.put('/article/567f8a571c17d9c58394970a/add-child/tags')
-      .send({
-        name: 'Healthy Recipes'
-      })
-      .end((error, { body, status }) => {
-        expect(status).to.equal(400)
-        expect(body).to.deep.containSubset({
-          message: 'Validate fail at: tags.4.slug'
+    it('invalid', (done) => {
+      request.put('/article/567f8a571c17d9c58394970a/add-child/tags')
+        .send({
+          name: 'Healthy Recipes'
         })
-        done()
-      })
-  })
+        .end((error, { body, status }) => {
+          expect(status).to.equal(400)
+          expect(body).to.deep.containSubset({
+            message: 'Validate fail at: tags.4.slug'
+          })
+          done()
+        })
+    })
 
-  it('valid', (done) => {
-    request.put('/article/567f8a571c17d9c58394970a/add-child/tags')
-      .send({
-        slug: 'healthy-recipes',
-        name: 'Healthy Recipes'
-      })
-      .end((error, { body, status }) => {
-        expect(status).to.equal(201)
-        expect(body).to.containSubset({
+    it('valid', (done) => {
+      request.put('/article/567f8a571c17d9c58394970a/add-child/tags')
+        .send({
           slug: 'healthy-recipes',
           name: 'Healthy Recipes'
         })
-        done()
-      })
-  })
-
-  it('not exists parent', (done) => {
-    request.put('/article/567f8a571c17d9c583949999/add-child/tags')
-      .send({
-        slug: 'healthy-recipes',
-        name: 'Healthy Recipes'
-      })
-      .end((error, { body, status }) => {
-        expect(status).to.equal(400)
-        expect(body).to.containSubset({
-          message: 'Not exists parent'
+        .end((error, { body, status }) => {
+          expect(status).to.equal(201)
+          expect(body).to.containSubset({
+            slug: 'healthy-recipes',
+            name: 'Healthy Recipes'
+          })
+          done()
         })
-        done()
-      })
+    })
+
+    it('not exists parent', (done) => {
+      request.put('/article/567f8a571c17d9c583949999/add-child/tags')
+        .send({
+          slug: 'healthy-recipes',
+          name: 'Healthy Recipes'
+        })
+        .end((error, { body, status }) => {
+          expect(status).to.equal(400)
+          expect(body).to.containSubset({
+            message: 'Not exists parent'
+          })
+          done()
+        })
+    })
   })
-})
+}
+
+runTest(koaRequest)
