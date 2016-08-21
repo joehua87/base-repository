@@ -1,7 +1,9 @@
-import { createKoaRequest, expect, setUpAndTearDown } from '../config-api-test'
+import { createKoaRequest, createExpressRequest, expect, setUpAndTearDown } from '../config-api-test'
 import koaApp from '../../_app/koa/app'
+import expressApp from '../../_app/express/app'
 
 const koaRequest = createKoaRequest(koaApp)
+const expressRequest = createExpressRequest(expressApp)
 
 const runTest = (request) => {
   describe('Query Api', () => {
@@ -66,4 +68,5 @@ const runTest = (request) => {
   })
 }
 
-runTest(koaRequest)
+describe('Koa App', () => runTest(koaRequest))
+describe('Express App', () => runTest(expressRequest))

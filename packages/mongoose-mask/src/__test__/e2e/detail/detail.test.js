@@ -1,7 +1,9 @@
-import { createKoaRequest, expect, setUpAndTearDown } from '../config-api-test'
+import { createKoaRequest, createExpressRequest, expect, setUpAndTearDown } from '../config-api-test'
 import koaApp from '../../_app/koa/app'
+import expressApp from '../../_app/express/app'
 
 const koaRequest = createKoaRequest(koaApp)
+const expressRequest = createExpressRequest(expressApp)
 
 const runTest = (request) => {
   describe('Detail Api', () => {
@@ -38,8 +40,9 @@ const runTest = (request) => {
 
     it('by id - not exists', (done) => {
       request.get('/article/id/567f8a571c17d9c583949999')
+        .expect(400)
         .end((error, { body }) => {
-          expect(body).to.deep.equal({})
+          expect(body.message).to.match(/not exists/)
           done()
         })
     })
@@ -55,8 +58,9 @@ const runTest = (request) => {
 
     it('by key - not exists', (done) => {
       request.get('/article/detail/not-exists')
+        .expect(400)
         .end((error, { body }) => {
-          expect(body).to.deep.equal({})
+          expect(body.message).to.match(/not exists/)
           done()
         })
     })
@@ -74,12 +78,14 @@ const runTest = (request) => {
     it('by filter - not exists', (done) => {
       request.get('/article/detail-by-filter')
         .query({ filter: { slug: 'no-result-here' } })
+        .expect(400)
         .end((error, { body }) => {
-          expect(body).to.deep.equal({})
+          expect(body.message).to.match(/not exists/)
           done()
         })
     })
   })
 }
 
-runTest(koaRequest)
+describe('Koa App', () => runTest(koaRequest))
+describe('Express App', () => runTest(expressRequest))
