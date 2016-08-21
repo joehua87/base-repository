@@ -25,10 +25,9 @@ export function setUpAndTearDown(initialData) {
     }
   })
 
-  after(async (done) => {
+  after(async () => {
     await mongoose.connection.db.dropDatabase()
     await mongoose.connection.close()
-    done()
   })
 }
 

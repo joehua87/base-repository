@@ -4,8 +4,8 @@
   "description": "Mongoose Plugin for createdTime & modifiedTime",
   "main": "src",
   "scripts": {
-    "build": "",
-    "test": ""
+    "build": "echo 'no build'",
+    "test": "echo 'no test'"
   },
   "files": [
     "src"
