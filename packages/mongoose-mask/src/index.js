@@ -1,4 +1,6 @@
 export BaseRepository from './base-repository/base-repository'
 export createKoaController from './create-controller/create-koa-controller'
 export registerKoaRoutes from './register-routes/register-koa-routes'
+export createExpressController from './create-controller/create-express-controller'
+export registerExpressRoutes from './register-routes/register-express-routes'
 export * as constants from './constants'
