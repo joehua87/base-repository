@@ -8,8 +8,4 @@ export default class ArticleRepository extends BaseRepository {
   constructor() {
     super(Article, ArticleSchema.config)
   }
-
-  * getById(id) {
-    return yield Article.findOne({ _id: id }).lean()
-  }
 }
