@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/joehua87/base-repository#readme",
   "devDependencies": {
+    "babel-eslint": "^6.1.2",
     "cross-env": "^2.0.0",
     "eslint": "^2.10.2",
     "eslint-config-airbnb-base": "^3.0.1",
