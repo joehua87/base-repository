@@ -9,6 +9,8 @@ import koaQs from 'koa-qs'
 
 import * as articleSchema from '../article.model.js'
 
+const debug = require('debug')('app')
+
 mongoose.model(articleSchema.schemaName, articleSchema.schema)
 
 const app = koa()
@@ -18,9 +20,9 @@ app.use(function* handleError(next) {
   } catch (err) {
     this.status = err.status || 500
     this.body = { message: err.message }
-    console.log(err)
+    debug(err)
     if (err.errors) {
-      console.log(err.errors)
+      debug(err.errors)
     }
   }
 })
