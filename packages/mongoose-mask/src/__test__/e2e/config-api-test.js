@@ -1,3 +1,4 @@
+import supertest from 'supertest'
 import mongoose from 'mongoose'
 import uuid from 'uuid'
 
@@ -32,7 +33,11 @@ export function setUpAndTearDown(initialData) {
 }
 
 export function createKoaRequest(koaApp) {
-  return require('supertest').agent(koaApp.listen())
+  return supertest.agent(koaApp.listen())
+}
+
+export function createExpressRequest(expressApp) {
+  return supertest(expressApp)
 }
 
 const chai = require('chai')

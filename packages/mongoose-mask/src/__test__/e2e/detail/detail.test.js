@@ -1,5 +1,5 @@
 import { createKoaRequest, expect, setUpAndTearDown } from '../config-api-test'
-import koaApp from '../../_koaApp/app'
+import koaApp from '../../_app/koa/app'
 
 const koaRequest = createKoaRequest(koaApp)
 

@@ -7,7 +7,7 @@ import koaBodyParser from 'koa-bodyparser'
 import koaJson from 'koa-json'
 import koaQs from 'koa-qs'
 
-import * as articleSchema from './article.model.js'
+import * as articleSchema from '../article.model.js'
 
 mongoose.model(articleSchema.schemaName, articleSchema.schema)
 
