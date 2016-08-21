@@ -1,5 +1,5 @@
 import parseRequestQuery from './parse-request-query'
-const debug = require('debug')('base-repository:create-controller')
+const debug = require('debug')('base-repository:create-koa-controller')
 
 export default function createController(repository) {
   function* query() {
@@ -82,6 +82,9 @@ export default function createController(repository) {
     }
     const response = yield repository.getByKey(key)
 
+    if (!response) {
+      this.throw(400, `Entity with key=${key} is not exists`)
+    }
     this.status = 200
     this.body = response
   }
@@ -95,6 +98,10 @@ export default function createController(repository) {
     }
     const response = yield repository.getById(id, projection)
     debug(`get bt id response: ${response}`)
+
+    if (!response) {
+      this.throw(400, `Entity with id=${id} is not exists`)
+    }
     this.status = 200
     this.body = response
   }
@@ -124,6 +131,10 @@ export default function createController(repository) {
     debug(`get by filter (sort = ${sort})`)
     debug(filter)
     const response = yield repository.getByFilter(filter, { sort, projection })
+
+    if (!response) {
+      this.throw(400, `Entity with filter=${JSON.stringify(filter)} is not exists`)
+    }
     this.status = 200
     this.body = response
   }
