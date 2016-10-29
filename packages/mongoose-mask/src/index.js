@@ -1,4 +1,5 @@
 export BaseRepository from './base-repository/base-repository'
+export parseRequestQuery from './create-controller/parse-request-query'
 export createKoaController from './create-controller/create-koa-controller'
 export registerKoaRoutes from './register-routes/register-koa-routes'
 export createExpressController from './create-controller/create-express-controller'
